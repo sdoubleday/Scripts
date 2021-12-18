@@ -52,29 +52,34 @@ ls $SourceDirectory |copy -Recurse -Filter {PSIsContainer} -Destination $Destina
 Get-ChildItem "$SourceDirectory\dataSources\" | Copy-Item -Destination "$DestinationDirectory\dataSources\";
 Get-ChildItem "$SourceDirectory\roles\" | Copy-Item -Destination "$DestinationDirectory\roles\";
 
-$json = Get-Content "$SourceDirectory\perspectives\$(PerspectiveName).json" | ConvertFrom-Json;
+$json = Get-Content "$SourceDirectory\perspectives\$($PerspectiveName).json" | ConvertFrom-Json;
 
 $json.Tables | ForEach-Object {
     $tableName = $_.Name;
-    $tablePath = "$SourceDirectory\" + $tableName + '\' + $tableName + '.json';
-    Get-ChildItem $tablePath | Copy-Item -Destination "$DestinationDirectory\tables\$tablePath" ;
-    $tablePartitionPath = "$SourceDirectory\" + $tableName + '\partitions\' ;
-    Get-ChildItem $tablePartitionPath | Copy-Item -Destination "$DestinationDirectory\tables\$tablePartitionPath" ;
+    $tablePath = "$SourceDirectory\tables\" + $tableName + '\' + $tableName + '.json';
+    $tableDestPath = "$DestinationDirectory\tables\" + $tableName + '\' + $tableName + '.json';
+    Get-ChildItem $tablePath | Copy-Item -Destination $tableDestPath ;
+    $tablePartitionPath = "$SourceDirectory\tables\" + $tableName + '\partitions\' ;
+    $tablePartitionDestPath = "$DestinationDirectory\tables\" + $tableName + '\partitions\' ;
+    Get-ChildItem $tablePartitionPath | Copy-Item -Destination $tablePartitionDestPath ;
     $_.Columns | %{
-         $columnPath = "$SourceDirectory\" + $tableName + '\columns\' + $_.Name + '.json' ;
-        Get-ChildItem $columnPath | Copy-Item -Destination "$DestinationDirectory\tables\$columnPath" ;
+         $columnPath = "$SourceDirectory\tables\" + $tableName + '\columns\' + $_.Name + '.json' ;
+         $columnDestPath = "$DestinationDirectory\tables\" + $tableName + '\columns\' + $_.Name + '.json' ;
+        Get-ChildItem $columnPath | Copy-Item -Destination $columnDestPath ;
     }
     ;
     if ($_.Measures.Count -gt 0) {
         $_.Measures | %{
-            $measurePath = "$SourceDirectory\" + $tableName + '\measures\' + $_.Name + '.json';
-            Get-ChildItem $measurePath | Copy-Item -Destination "$DestinationDirectory\tables\$measurePath"
+            $measurePath = "$SourceDirectory\tables\" + $tableName + '\measures\' + $_.Name + '.json';
+            $measureDestPath = "$DestinationDirectory\tables\" + $tableName + '\measures\' + $_.Name + '.json';
+            Get-ChildItem $measurePath | Copy-Item -Destination $measureDestPath;
         }
     } ;
     if ($_.Hierarchies.Count -gt 0) {
         $_.Hierarchies | %{
-            $hierarchyPath = "$SourceDirectory\" + $tableName + '\hierarchies\' + $_.Name + '.json';
-            Get-ChildItem $hierarchyPath | Copy-Item -Destination "$DestinationDirectory\tables\$hierarchyPath"
+            $hierarchyPath = "$SourceDirectory\tables\" + $tableName + '\hierarchies\' + $_.Name + '.json';
+            $hierarchyDestPath = "$DestinationDirectory\tables\" + $tableName + '\hierarchies\' + $_.Name + '.json';
+            Get-ChildItem $hierarchyPath | Copy-Item -Destination $hierarchyDestPath;
         }
     }
 }
