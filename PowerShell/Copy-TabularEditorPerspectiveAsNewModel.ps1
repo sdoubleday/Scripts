@@ -1,5 +1,9 @@
-﻿PARAM(
+﻿[CmdletBinding()]
 
+PARAM(
+
+[Parameter(Mandatory= $true
+,HelpMessage= "new Tabular Editor Folder Save")]
 [ValidateNotNullorEmpty()][ValidateScript({
             IF (Test-Path -PathType Container -Path $_ -IsValid) 
                 {$True}
@@ -8,14 +12,18 @@
             } 
         })][String]$DestinationDirectory
 ,
- [ValidateNotNullorEmpty()][ValidateScript({
+[Parameter(Mandatory= $true
+,HelpMessage= "Source folder of Tabular Editor Folder Save")]
+[ValidateNotNullorEmpty()][ValidateScript({
              IF (Test-Path -PathType Container -Path $_ ) 
                  {$True}
              ELSE {
                  Throw "$_ is not a Directory."
              } 
          })][String]$SourceDirectory
-,[String]$PerspectiveName
+,[Parameter(Mandatory= $true
+,HelpMessage= "Name of Perspective to be split out. All measure and hierarchy column dependencies must be included in the perspective - its contents must stand alone.")]
+[String]$PerspectiveName
 )
 
 function Remove-EmptyFoldersRecursively {
