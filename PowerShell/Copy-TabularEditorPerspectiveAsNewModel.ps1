@@ -59,6 +59,7 @@ ls $SourceDirectory |copy -Recurse -Filter {PSIsContainer} -Destination $Destina
 #model like we have enterprise edition but deploy it like we don't, i.e. on cheaper standard edition SSAS servers. 
 Get-ChildItem "$SourceDirectory\dataSources\" | Copy-Item -Destination "$DestinationDirectory\dataSources\";
 Get-ChildItem "$SourceDirectory\roles\" | Copy-Item -Destination "$DestinationDirectory\roles\";
+Get-ChildItem "$SourceDirectory\relationships\" | Copy-Item -Destination "$DestinationDirectory\relationships\";
 
 $json = Get-Content "$SourceDirectory\perspectives\$($PerspectiveName).json" | ConvertFrom-Json;
 
